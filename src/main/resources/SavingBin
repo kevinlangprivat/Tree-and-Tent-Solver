@@ -1,0 +1,105 @@
+//|--------------------------------------------------------------------------------------------------------------------|
+//|                                                    Hill Climbing                                                   |
+//|--------------------------------------------------------------------------------------------------------------------|
+
+    // This variable counts the number of times climb was called
+    private int iteration = 0;
+
+    /**
+     * This method is used to TODO
+     *
+     * @param assignment
+     * @return
+     */
+    private LinkedHashMap<V, D> hillClimbing(LinkedHashMap<V, D> assignment) {
+        if (assignment.size() == variables.size()) {
+            return assignment;
+        }
+
+        // Make a copy of puzzle to work with.
+        LinkedHashMap<V, D> localAssignment = new LinkedHashMap<>(assignment);
+        V unassigned = null;
+        do {
+            // Fill in the blanks with a random set of numbers.
+            initializeState(currentState);
+
+            // climb method
+            localAssignment = climb(currentState);
+
+            //
+            temp.setCurrentState(solutionState);
+        // as long as no good solution is found
+        } while (!consistent(unassigned, localAssignment));
+        return null;
+    }
+
+    /**
+     * ...
+     *
+     * @param assignment
+     * @return
+     */
+    private LinkedHashMap<V, D> climb(LinkedHashMap<V, D> assignment){
+
+        int temporaryValue;                                                                                             // ->
+        int randomRowIndex;                                                                                             // ->
+        int[] colIndex = new int[2];                                                                                    // ->
+
+
+
+        // Get Evaluation function for currentState
+        temp.setCurrentState(currentState);                                                                             // ->
+        currentErrorCount = temp.verify();                                                                              // ->
+        temp.printCurrentState();                                                                                       // ->
+
+
+
+        // Picks a random row in initialState, and if two random elements that belong in that row
+        // both equal zero, swap those values in the assignment.
+        Random generator = new Random();                                                                                // -> Object of Random Type
+        randomRowIndex = generator.nextInt(4);                                                                   // ->
+        do {
+            for (int i = 0; i < 2; i++) {                                                                               // ->
+                colIndex[i] = generator.nextInt(4);                                                              // ->
+            }
+        } while (initialState[randomRowIndex][colIndex[0]] != 0 || initialState[randomRowIndex][colIndex[1]] != 0);     // ->
+
+
+        temporaryValue = assignment[randomRowIndex][colIndex[0]];                                                       // ->
+        assignment[randomRowIndex][colIndex[0]] = assignment[randomRowIndex][colIndex[1]];                              // ->
+        assignment[randomRowIndex][colIndex[1]] = temporaryValue;                                                       // ->
+
+
+
+        // Get Evaluation function for assignment
+        temp.setCurrentState(assignment);                                                                               // ->
+        neighborErrorCount = temp.verify();                                                                             // ->
+
+
+
+        // Increment iteration to keep track of how many times climb was called.
+        // If it was called 420 times, then we need to restart the whole process.
+        iteration++;                                                                                                    // ->
+        if (iteration == 420) {                                                                                         // -> Backtracking because of to many trys
+            iteration = 0;                                                                                              // -> Reseting the trys
+            return null;                                                                                                // -> Null is the error indicator
+        }
+        if (neighborErrorCount == 0) {                                                                                  // -> Checks if there is no error
+            return assignment;                                                                                          // -> Return the correct
+        } else if (neighborErrorCount >= currentErrorCount) {                                                           // ->
+            return climb(currentState);                                                                                 // ->
+        } else {                                                                                                        // ->
+            return climb(assignment);                                                                                   // ->
+        }
+    }
+
+
+    /**
+     * Helper for localSearch when nothing known yet
+     *
+     * @return A map containing the solution.
+     */
+    private LinkedHashMap<V, D> hillClimbing() {
+        return hillClimbing(new LinkedHashMap<>());
+    }
+

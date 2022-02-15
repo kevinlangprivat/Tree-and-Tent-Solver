@@ -1,0 +1,5 @@
+0, 2903, 1295, miRVFC
+0, 1374, 502, BacktrackingSearchFC
+1, 10573, 4040, miRVFC
+1, 10534, 3183, BacktrackingSearchFC
+2, 8168, 3530, miRVFC
